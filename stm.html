@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stopwatch</title>
+    <style>
+      /* General styles */
+      body {
+        background-color: #2d3748; /* dark gray */
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
+
+      .container {
+        text-align: center;
+        width: 100%;
+        max-width: 600px;
+        padding: 20px;
+      }
+
+      .title {
+        font-size: 2rem;
+        margin-bottom: 20px;
+      }
+
+      .timer {
+        font-size: 3rem;
+        font-family: "Courier New", Courier, monospace;
+        margin-bottom: 20px;
+      }
+
+      .buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      @media (min-width: 640px) {
+        .title {
+          font-size: 3rem;
+        }
+
+        .timer {
+          font-size: 4rem;
+        }
+
+        .buttons {
+          flex-direction: row;
+          margin-left: 80px;
+        }
+      }
+
+      /* Button styles */
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        color: white;
+      }
+
+      .start {
+        background-color: #38a169; /* green */
+      }
+      .stop {
+        background-color: red;
+      }
+      .lap {
+        background-color: #4299e1; /* blue */
+      }
+
+      .reset {
+        background-color: #d69e2e; /* yellow */
+      }
+
+      .clear {
+        background-color: #e53e3e; /* red */
+      }
+
+      /* Laps styles */
+      .laps {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .laps li {
+        font-size: 1.25rem;
+        margin-bottom: 10px;
+      }
+
+      /* Timer animation */
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .timer-animation {
+        animation: spin 1s linear infinite;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="title">Stopwatch</h1>
+      <div id="timer1" class="timer">00:00:00</div>
+      <div class="buttons">
+        <button onclick="start()" id="startStopBtn" class="btn start">
+          Start
+        </button>
+        <button onclick="stop()" id="stop" class="btn stop">Stop</button>
+        <button onclick="lap()" id="lapBtn" class="btn lap">Lap</button>
+        <button onclick="reset()" id="resetBtn" class="btn reset">Reset</button>
+        <button onclick="clearLaps()" id="clearLapsBtn" class="btn clear">
+          Clear Laps
+        </button>
+      </div>
+      <ul id="laps" class="laps"></ul>
+    </div>
+    <script>
+      var isStop = true;
+      var s = 0;
+      var min = 0;
+      var hr = 0;
+      var laps = [];
+
+      function start() {
+        if (isStop == true) {
+          isStop = false;
+          timer();
+        }
+      }
+
+      function timer() {
+        s = parseInt(s);
+        min = parseInt(min);
+        hr = parseInt(hr);
+        if (isStop == false) {
+          s++;
+          if (s == 60) {
+            s = 0;
+            min++;
+          }
+          if (min == 60) {
+            min = 0;
+            hr++;
+          }
+          if (s < 10) {
+            s = "0" + s;
+          }
+          if (min < 10) {
+            min = "0" + min;
+          }
+          if (hr < 10) {
+            hr = "0" + hr;
+          }
+          timer1.innerHTML = hr + ":" + min + ":" + s;
+
+          setTimeout("timer()", 1000);
+        }
+      }
+
+      function stop() {
+        isStop = true;
+      }
+
+      function lap() {
+        if (!isStop) {
+          var lapTime = hr + ":" + min + ":" + s;
+          laps.push(lapTime);
+          displayLaps();
+        }
+      }
+
+      function displayLaps() {
+        var lapsList = document.getElementById("laps");
+        lapsList.innerHTML = "";
+        for (var i = 0; i < laps.length; i++) {
+          var li = document.createElement("li");
+          li.innerText = "Lap " + (i + 1) + ": " + laps[i];
+          lapsList.appendChild(li);
+        }
+      }
+
+      function reset() {
+        isStop = true;
+        s = 0;
+        min = 0;
+        hr = 0;
+        timer1.innerHTML = "00:00:00";
+        laps = [];
+        displayLaps();
+      }
+
+      function clearLaps() {
+        laps = [];
+        displayLaps();
+      }
+    </script>
+  </body>
+</html>
